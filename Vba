@@ -31,3 +31,36 @@ Sub AppendPowerQueryData()
 
     MsgBox "Data appended to archive.", vbInformation
 End Sub
+
+
+
+Sub AppendPowerQueryData()
+    Dim wsSource As Worksheet, wsDest As Worksheet
+    Dim tblSource As ListObject, tblDest As ListObject
+    Dim row As Range
+
+    Set wsSource = ThisWorkbook.Sheets("TempQuery")
+    Set wsDest = ThisWorkbook.Sheets("DataArchive")
+
+    Set tblSource = wsSource.ListObjects(1)
+    Set tblDest = wsDest.ListObjects(1)
+
+    Application.ScreenUpdating = False
+    Application.EnableEvents = False
+
+    ' Append rows from TempQuery to DataArchive
+    For Each row In tblSource.DataBodyRange.Rows
+        With tblDest
+            .ListRows.Add
+            .ListRows(.ListRows.Count).Range.Value = row.Value
+        End With
+    Next row
+
+    ' Clear the TempQuery table data
+    tblSource.DataBodyRange.ClearContents
+
+    Application.EnableEvents = True
+    Application.ScreenUpdating = True
+
+    MsgBox "Data appended and TempQuery cleared.", vbInformation
+End Sub
